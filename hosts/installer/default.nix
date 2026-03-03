@@ -52,7 +52,6 @@
 
     sudo nixos-install \
       --no-root-password \
-      --write-efi-boot-entries \
       --flake github:zbroniszewski/nixos-config#busybox
 
     echo "Done. Rebooting..."
