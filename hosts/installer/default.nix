@@ -13,40 +13,48 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  services.spice-vdagentd.enable = true;
-  systemd.services.spice-vdagentd.wantedBy = [ "default.target" ];
+  environment.loginShellInit = ''
+    set -Eeuo pipefail
+    trap 'echo "Installer failed. Dropping to shell."; exec bash' ERR
 
-  programs.bash.loginShellInit = ''
-    if [ -z "$AUTO_INSTALL_RAN" ]; then
-      export AUTO_INSTALL_RAN=1
-
-      clear
-      echo "Starting automated installation..."
-
-      DISK=$(${pkgs.util-linux}/bin/lsblk -d -o NAME,SIZE --noheadings \
-        | ${pkgs.gum}/bin/gum choose \
-        | awk '{print "/dev/"$1}')
-
-      echo "Selected $DISK"
-
-      TOKEN=$(${pkgs.gum}/bin/gum input --password --prompt "GitHub PAT (repo read access): ")
-
-      FLAKE_URL=git+https://$TOKEN@github.com/zbroniszewski/nixos-config.git#busybox
-
-      echo "Running disko..."
-      nix run github:nix-community/disko -- \
-        --mode destroy,format,mount \
-        ${../busybox/disko.nix} \
-        --arg disk "\"$DISK\"" \
-        --yes-wipe-all-disks
-
-      echo "Installing system..."
-      nixos-install \
-        --no-root-password \
-        --flake "$FLAKE_URL"
-
-      echo "Done. Rebooting..."
-      reboot
+    if [ -f /tmp/installer-ran ]; then
+      return
     fi
+
+    touch /tmp/installer-ran
+
+    echo "Waiting for network..."
+    until ip route | grep -q default; do
+      sleep 1
+    done
+
+    echo "Network ready. Starting automated installation..."
+
+    if ! DISK=$(${pkgs.util-linux}/bin/lsblk -d -o NAME,SIZE --noheadings \
+        | ${pkgs.gum}/bin/gum choose \
+        | awk '{print "/dev/"$1}'); then
+      echo "Disk selection cancelled."
+      exec bash
+    fi
+
+    echo "Selected $DISK"
+
+    echo "Disko will wipe $DISK in 5 seconds. Press Ctrl+C to abort."
+    sleep 5
+
+    sudo nix run github:nix-community/disko -- \
+      --mode destroy,format,mount \
+      ${../busybox/disko.nix} \
+      --arg disk "\"$DISK\"" \
+      --yes-wipe-all-disks
+
+    echo "Installing system..."
+
+    sudo nixos-install \
+      --no-root-password \
+      --flake github:zbroniszewski/nixos-config#busybox
+
+    echo "Done. Rebooting..."
+    reboot
   '';
 }
