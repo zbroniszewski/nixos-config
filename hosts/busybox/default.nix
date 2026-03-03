@@ -2,13 +2,16 @@
 
 {
   networking.hostName = "busybox";
-  networking.networkmanager.enable = true;
+  # networking.networkmanager.enable = true;
 
   time.timeZone = "America/New_York";
 
   i18n.defaultLocale = "en_US.UTF-8";
 
-  services.openssh.enable = true;
+  # services.openssh.enable = true;
+
+  programs.hyprland.enable = true;
+  programs.hyprland.withUWSM = true;
 
   # services.getty.autologinUser = "zach";
 
@@ -28,8 +31,6 @@
     vim
     zsh
   ];
-
-  programs.zsh.enable = true;
 
   # Required for flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
