@@ -30,6 +30,21 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.initrd.availableKernelModules = [
+    # VM
+    "virtio_pci"
+    "virtio_blk"
+    "virtio_scsi"
+
+    # NVMe
+    "nvme"
+
+    # SATA
+    "ahci"
+
+    # USB
+    "xhci_pci"
+  ];
 
   system.stateVersion = "25.11";
 }
