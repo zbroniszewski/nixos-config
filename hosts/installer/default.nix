@@ -37,15 +37,23 @@
       exec bash
     fi
 
-    echo "Installing NixOS to $DISK..."
-
     RAM_GiB=$(awk '/MemTotal/ { printf "%.0f\n", $2/1024/1024 }' /proc/meminfo)
 
-    sudo nix run github:nix-community/disko/latest#disko-install -- \
+    echo "Wiping, formatting and mounting $DISK..."
+
+    sudo nix run github:nix-community/disko -- \
+      --mode zap_create_mount \
+      ${../busybox/disko.nix} \
+      --arg disk "\"$DISK\"" \
+      --arg swapSize "\"$RAM_GiB\"" \
+      --yes-wipe-all-disks
+
+    echo "Installing NixOS to $DISK..."
+
+    sudo nixos-install \
+      --no-root-password \
       --write-efi-boot-entries \
-      --flake github:zbroniszewski/nixos-config#busybox \
-      --disk main "$DISK" \
-      --arg swapSize "$RAM_GiB"
+      --flake github:zbroniszewski/nixos-config#busybox
 
     echo "Done. Rebooting..."
     reboot
