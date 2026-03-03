@@ -31,5 +31,5 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  system.stateVersion = "24.11"; # adjust to your initial install version
+  system.stateVersion = "25.11";
 }
