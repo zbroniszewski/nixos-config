@@ -37,22 +37,11 @@
       exec bash
     fi
 
-    echo "Selected $DISK"
+    echo "Installing NixOS to $DISK..."
 
-    echo "Disko will wipe $DISK in 5 seconds. Press Ctrl+C to abort."
-    sleep 5
-
-    sudo nix run github:nix-community/disko -- \
-      --mode destroy,format,mount \
-      ${../busybox/disko.nix} \
-      --arg disk "\"$DISK\"" \
-      --yes-wipe-all-disks
-
-    echo "Installing system..."
-
-    sudo nixos-install \
-      --no-root-password \
-      --flake github:zbroniszewski/nixos-config#busybox
+    sudo nix run github:nix-community/disko/latest#disko-install -- \
+      --flake github:zbroniszewski/nixos-config#busybox \
+      --disk main "$DISK"
 
     echo "Done. Rebooting..."
     reboot
