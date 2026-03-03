@@ -40,13 +40,13 @@
                 mountpoint = "/";
 
                 subvolumes = {
-                  "@root" = {
+                  "/root" = {
                     mountpoint = "/";
                     mountOptions = [ "compress=zstd" ];
                   };
 
-                  "@swap" = {
-                    mountpoint = "/swap";
+                  "/swap" = {
+                    mountpoint = "/.swap";
                     swap.swapfile.size = "64G";
                   };
                 };
