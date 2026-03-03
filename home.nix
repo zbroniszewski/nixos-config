@@ -18,7 +18,7 @@
   wayland.windowManager.hyprland.settings = {
     bind = [
       "SUPER,Return,exec,ghostty"
-    ]
+    ];
   };
 
   # Hint Electron apps to use Wayland
