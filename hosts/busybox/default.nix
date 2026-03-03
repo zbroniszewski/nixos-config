@@ -12,6 +12,7 @@
 
   programs.hyprland.enable = true;
   programs.hyprland.withUWSM = true;
+  programs.zsh.enable = true;
 
   # services.getty.autologinUser = "zach";
 
