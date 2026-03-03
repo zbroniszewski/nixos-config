@@ -41,27 +41,12 @@
                 mountpoint = "/";
 
                 subvolumes = {
-                  "/root" = {
+                  "@root" = {
                     mountpoint = "/";
-                    mountOptions = [ "subvol=root" "compress=zstd:3" "ssd" "discard=async" "space_cache=v2" "commit=120" ];
+                    mountOptions = [ "compress=zstd" ];
                   };
 
-                  "/home" = {
-                    mountpoint = "/home";
-                    mountOptions = [ "subvol=home" "compress=zstd:3" "ssd" "discard=async" "space_cache=v2" "commit=120" "autodefrag" ];
-                  };
-
-                  "/log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = [ "subvol=log" "compress=zstd:3" "ssd" "discard=async" "space_cache=v2" "commit=120" "nodatacow" "nodatasum" ];
-                  };
-
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "subvol=nix" "compress=zstd:3" "ssd" "discard=async" "space_cache=v2" "commit=120" "nodatacow" "nodatasum" ];
-                  };
-
-                  "/swap" = {
+                  "@swap" = {
                     mountpoint = "/swap";
                     swap.swapfile.size = "64G";
                   };
