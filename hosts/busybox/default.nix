@@ -16,6 +16,7 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ];
     shell = pkgs.zsh;
+    hashedPassword = "$y$j9T$RjvOGDRBEf36J8suQPtrV.$rKEABL7XZolwtS6l2ddMMRZKCGMkezH2yp0Tg41O8p8";
   };
 
   security.sudo.wheelNeedsPassword = false;
