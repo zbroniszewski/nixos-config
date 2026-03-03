@@ -25,7 +25,6 @@
 
           main = {
             size = "100%";
-            label = "NixOS";
 
             content = {
               type = "luks";
@@ -37,7 +36,7 @@
 
               content = {
                 type = "btrfs";
-                extraArgs = [ "--label" "NixOS" "-f" ];
+                extraArgs = [ "-f" ];
                 mountpoint = "/";
 
                 subvolumes = {
