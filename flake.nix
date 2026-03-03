@@ -24,6 +24,7 @@
       modules = [
         disko.nixosModules.disko
         ./hosts/busybox
+        ./hosts/busybox/disko.nix
         home-manager.nixosModules.home-manager
         {
           home-manager = {
