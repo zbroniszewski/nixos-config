@@ -25,6 +25,7 @@
 
           main = {
             size = "100%";
+            label = "NixOS";
 
             content = {
               type = "luks";
