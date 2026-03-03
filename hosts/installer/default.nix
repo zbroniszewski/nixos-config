@@ -39,10 +39,13 @@
 
     echo "Installing NixOS to $DISK..."
 
+    RAM_GiB=$(awk '/MemTotal/ { printf "%.0f\n", $2/1024/1024 }' /proc/meminfo)
+
     sudo nix run github:nix-community/disko/latest#disko-install -- \
       --write-efi-boot-entries \
       --flake github:zbroniszewski/nixos-config#busybox \
       --disk main "$DISK"
+      --arg swapSize "$RAM_GiB"
 
     echo "Done. Rebooting..."
     reboot
