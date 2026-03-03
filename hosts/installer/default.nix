@@ -40,6 +40,7 @@
     echo "Installing NixOS to $DISK..."
 
     sudo nix run github:nix-community/disko/latest#disko-install -- \
+      --write-efi-boot-entries \
       --flake github:zbroniszewski/nixos-config#busybox \
       --disk main "$DISK"
 
