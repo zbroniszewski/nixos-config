@@ -30,7 +30,6 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.timeout = 5;
 
   system.stateVersion = "24.11"; # adjust to your initial install version
 }
