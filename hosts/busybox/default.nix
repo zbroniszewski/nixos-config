@@ -10,7 +10,7 @@
 
   services.openssh.enable = true;
 
-  services.getty.autologinUser = "zach";
+  # services.getty.autologinUser = "zach";
 
   users.users.zach = {
     isNormalUser = true;
