@@ -38,18 +38,7 @@
                 type = "btrfs";
                 extraArgs = [ "-f" ];
                 mountpoint = "/";
-
-                subvolumes = {
-                  "/root" = {
-                    mountpoint = "/";
-                    mountOptions = [ "compress=zstd" ];
-                  };
-
-                  "/swap" = {
-                    mountpoint = "/.swap";
-                    swap.swapfile.size = "64G";
-                  };
-                };
+                mountOptions = [ "compress=zstd" ];
               };
             };
           };
