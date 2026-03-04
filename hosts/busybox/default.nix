@@ -2,7 +2,7 @@
 
 {
   networking.hostName = "busybox";
-  # networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true;
 
   time.timeZone = "America/New_York";
 
@@ -16,7 +16,6 @@
   programs.zsh.enable = true;
 
   services.greetd.enable = true;
-
   services.greetd.settings = {
     default_session = {
       command = "start-hyprland";
