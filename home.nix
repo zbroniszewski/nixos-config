@@ -23,6 +23,7 @@
       "SUPER, Return, exec, ghostty"
       "SUPER, W, Close window, killactive"
     ];
+    debug.disable_logs = true;
   };
 
   # Hint Electron apps to use Wayland

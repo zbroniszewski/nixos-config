@@ -2,9 +2,10 @@
 
 {
   # Suppress boot logs
-  boot.kernelParams = lib.mkAfter [ "quiet" "udev.log_level=0" ];
+  boot.kernelParams = lib.mkAfter [ "quiet" "udev.log_level=0" "systemd.log_level=err" "systemd.show_status=false" ];
   boot.consoleLogLevel = 0;
   boot.initrd.verbose = false;
+  boot.initrd.systemd.enable = true;
 
   networking.hostName = "busybox";
   networking.networkmanager.enable = true;
@@ -23,7 +24,7 @@
   services.greetd.enable = true;
   services.greetd.settings = {
     default_session = {
-      command = "start-hyprland";
+      command = "start-hyprland > /dev/null 2>&1";
       user = "zach";
     };
   };
