@@ -29,7 +29,6 @@ virt-install \
   --graphics spice \
   --boot uefi,menu=on \
   --connect qemu:///system \
-  --noreboot \
   --noautoconsole
 
 virt-manager \
