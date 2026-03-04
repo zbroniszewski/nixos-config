@@ -69,11 +69,6 @@
 
       echo "Selected disk: $DISK"
 
-      git clone https://github.com/zbroniszewski/nixos-config /tmp/nixos-config \
-        || { echo "Failed to clone config repo."; exec bash; }
-
-      cd /tmp/nixos-config
-
       RAM_GiB=$(awk '/MemTotal/ { printf "%.0f\n", $2/1024/1024 }' /proc/meminfo)
 
       echo "Wiping, formatting and mounting $DISK..."
@@ -85,14 +80,18 @@
         --arg swapSize "\"$RAM_GiB\"" \
         --yes-wipe-all-disks
 
+      git clone https://github.com/zbroniszewski/nixos-config /mnt/etc/nixos \
+        || { echo "Failed to clone config repo."; exec bash; }
+
       nixos-generate-config --no-filesystems --root /mnt
-      cp /mnt/etc/nixos/hardware-configuration.nix ./hosts/busybox/
+      rm -rf /mnt/etc/nixos/configuration.nix
 
       echo "Installing NixOS to $DISK..."
 
       nixos-install \
         --no-root-password \
-        --flake .#busybox
+        --no-channel-copy \
+        --flake path:/mnt/etc/nixos#busybox
 
       echo "Done. Rebooting..."
       systemctl reboot
