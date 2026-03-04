@@ -27,5 +27,5 @@
   # Hint Electron apps to use Wayland
   home.sessionVariables.NIXOS_OZONE_WL = "1";
 
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
 }
