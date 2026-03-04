@@ -12,49 +12,88 @@
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # Increase buffer size used for downloading flakes
+  nix.settings.download-buffer-size = 524288000;
 
-  environment.loginShellInit = ''
-    set -Eeuo pipefail
-    trap 'echo "Installer failed. Dropping to shell."; exec bash' ERR
+  systemd.services.autoInstall = {
+    description = "Interactive NixOS installer";
+    wantedBy = [ "multi-user.target" ];
 
-    if [ -f /tmp/installer-ran ]; then
-      return
-    fi
+    after = [ "network-online.target" "systemd-networkd-wait-online.service" ];
+    before = [ "autovt@tty1.service" ];
+    conflicts = [ "autovt@tty1.service" ];
+    wants = [ "network-online.target" ];
 
-    touch /tmp/installer-ran
+    serviceConfig = {
+      Type = "simple";
 
-    echo "Waiting for network..."
-    until ip route | grep -q default; do
-      sleep 1
-    done
+      StandardInput = "tty";
+      StandardOutput = "tty";
+      StandardError = "tty";
 
-    echo "Network ready. Starting automated installation..."
+      TTYPath = "/dev/tty1";
+      TTYReset = true;
+      TTYVHangup = true;
 
-    if ! DISK=$(${pkgs.util-linux}/bin/lsblk -d -o NAME,SIZE --noheadings \
-        | ${pkgs.gum}/bin/gum choose \
-        | awk '{print "/dev/"$1}'); then
-      echo "Disk selection cancelled."
-      exec bash
-    fi
+      Environment = "PATH=${lib.makeBinPath [
+        pkgs.bashInteractive
+        pkgs.coreutils
+        pkgs.gawk
+        pkgs.git
+        pkgs.gum
+        pkgs.nix
+        pkgs.nixos-install-tools
+        pkgs.systemd
+        pkgs.util-linux
+      ]}";
+    };
 
-    RAM_GiB=$(awk '/MemTotal/ { printf "%.0f\n", $2/1024/1024 }' /proc/meminfo)
+    script = ''
+      set -Eeuxo pipefail
+      trap 'echo "Installer failed at line $LINENO. Dropping to shell."; exec bash' ERR
 
-    echo "Wiping, formatting and mounting $DISK..."
+      echo "Starting automated NixOS install..."
 
-    sudo nix run github:nix-community/disko -- \
-      --mode zap_create_mount \
-      ${../busybox/disko.nix} \
-      --arg disk "\"$DISK\"" \
-      --arg swapSize "\"$RAM_GiB\"" \
-      --yes-wipe-all-disks
+      echo "Select installation disk:"
 
-    echo "Installing NixOS to $DISK..."
+      choice=$(
+        lsblk -d -o NAME,SIZE --noheadings \
+        | gum choose
+      )
 
-    sudo nixos-install \
-      --no-root-password \
-      --flake github:zbroniszewski/nixos-config#busybox
+      [[ -n "$choice" ]] || { echo "Disk selection cancelled."; exec bash; }
 
-    echo "Done. Rebooting..."
-    reboot
-  '';
+      DISK="/dev/$(echo "$choice" | cut -d ' ' -f1)"
+
+      echo "Selected disk: $DISK"
+
+      git clone https://github.com/zbroniszewski/nixos-config /tmp/nixos-config \
+        || { echo "Failed to clone config repo."; exec bash; }
+
+      cd /tmp/nixos-config
+
+      RAM_GiB=$(awk '/MemTotal/ { printf "%.0f\n", $2/1024/1024 }' /proc/meminfo)
+
+      echo "Wiping, formatting and mounting $DISK..."
+
+      nix run github:nix-community/disko -- \
+        --mode zap_create_mount \
+        ${../busybox/disko.nix} \
+        --arg disk "\"$DISK\"" \
+        --arg swapSize "\"$RAM_GiB\"" \
+        --yes-wipe-all-disks
+
+      nixos-generate-config --no-filesystems --root /mnt
+      cp /mnt/etc/nixos/hardware-configuration.nix ./hosts/busybox/
+
+      echo "Installing NixOS to $DISK..."
+
+      nixos-install \
+        --no-root-password \
+        --flake .#busybox
+
+      echo "Done. Rebooting..."
+      systemctl reboot
+    '';
+  };
 }
