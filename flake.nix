@@ -22,9 +22,10 @@
       inherit system;
 
       modules = [
-        disko.nixosModules.disko
         ./hosts/busybox
         ./hosts/busybox/disko.nix
+        ./hosts/busybox/hardware-configuration.nix
+        disko.nixosModules.disko
         home-manager.nixosModules.home-manager
         {
           home-manager = {
@@ -38,6 +39,7 @@
 
     nixosConfigurations.installer = nixpkgs.lib.nixosSystem {
       inherit system;
+
       modules = [
         ./hosts/installer
       ];
