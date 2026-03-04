@@ -10,9 +10,19 @@
 
   # services.openssh.enable = true;
 
+  programs.uwsm.enable = true;
   programs.hyprland.enable = true;
   programs.hyprland.withUWSM = true;
   programs.zsh.enable = true;
+
+  services.greetd.enable = true;
+
+  services.greetd.settings = {
+    default_session = {
+      command = "uwsm start hyprland";
+      user = "zach";
+    };
+  };
 
   # services.getty.autologinUser = "zach";
 
@@ -53,6 +63,7 @@
     # USB
     "xhci_pci"
   ];
+
 
   system.stateVersion = "25.11";
 }
