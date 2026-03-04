@@ -84,6 +84,7 @@
         --yes-wipe-all-disks
 
       nixos-generate-config --no-filesystems --root /mnt
+      cp /mnt/etc/nixos/hardware-configuration.nix ./hosts/busybox/
 
       echo "Installing NixOS to $DISK..."
 

@@ -22,9 +22,9 @@
       inherit system;
 
       modules = [
-        /etc/nixos/hardware-configuration.nix
         ./hosts/busybox
         ./hosts/busybox/disko.nix
+        ./hosts/busybox/hardware-configuration.nix
         disko.nixosModules.disko
         home-manager.nixosModules.home-manager
         {
