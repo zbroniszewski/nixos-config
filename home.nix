@@ -5,6 +5,9 @@
   home.homeDirectory = "/home/zach";
 
   programs.git.enable = true;
+  programs.git.extraConfig = {
+    safe.directory = [ "/etc/nixos" ];
+  };
   programs.zsh.enable = true;
   programs.ghostty.enable = true;
 
