@@ -1,6 +1,11 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Suppress boot logs
+  boot.kernelParams = lib.mkAfter [ "quiet" "udev.log_level=0" ];
+  boot.consoleLogLevel = 0;
+  boot.initrd.verbose = false;
+
   networking.hostName = "busybox";
   networking.networkmanager.enable = true;
 
