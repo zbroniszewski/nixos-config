@@ -10,7 +10,7 @@ nix build \
 
 # Destroy previous VMs
 for vm in $(virsh --connect qemu:///system list --all --name | grep '^nixos-iso-'); do
-  virsh --connect qemu:///system destroy "$vm"
+  virsh --connect qemu:///system destroy "$vm" 2>/dev/null || true
   virsh --connect qemu:///system undefine "$vm" \
     --remove-all-storage \
     --nvram
