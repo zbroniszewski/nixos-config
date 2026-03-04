@@ -5,6 +5,8 @@
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
   ];
 
+  services.qemuGuest.enable = true;
+
   environment.systemPackages = with pkgs; [
     git
     gum
