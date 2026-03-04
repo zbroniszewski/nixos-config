@@ -20,7 +20,8 @@
   wayland.windowManager.hyprland.systemd.enable = false;
   wayland.windowManager.hyprland.settings = {
     bind = [
-      "SUPER,Return,exec,ghostty"
+      "SUPER, Return, exec, ghostty"
+      "SUPER, W, Close window, killactive"
     ];
   };
 
