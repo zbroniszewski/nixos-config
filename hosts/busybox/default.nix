@@ -19,7 +19,7 @@
 
   services.greetd.settings = {
     default_session = {
-      command = "uwsm start hyprland";
+      command = "start-hyprland";
       user = "zach";
     };
   };
