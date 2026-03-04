@@ -24,7 +24,7 @@
   services.greetd.enable = true;
   services.greetd.settings = {
     default_session = {
-      command = "start-hyprland > /dev/null 2>&1";
+      command = "uwsm start hyprland.desktop 2>&1 | systemd-cat -t uwsm";
       user = "zach";
     };
   };
