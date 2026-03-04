@@ -21,7 +21,7 @@
   wayland.windowManager.hyprland.settings = {
     bind = [
       "SUPER, Return, exec, ghostty"
-      "SUPER, W, Close window, killactive"
+      "SUPER, W, killactive"
     ];
     debug.disable_logs = true;
   };
